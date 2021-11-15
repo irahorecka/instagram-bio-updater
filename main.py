@@ -6,8 +6,11 @@ import os
 from datetime import datetime
 
 from pyowm import OWM
+from dotenv import load_dotenv
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+load_dotenv()
+
 
 def main(owm_api_key):
     """Gets current weather data, build's IG bio, and writes IG bio to 'bio.txt'"""

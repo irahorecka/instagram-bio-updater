@@ -1,15 +1,18 @@
 // Node file to log into IG and update IG bio with content from bio.txt.
 
-const fs = require('fs')
-const path = require('path')
-const { IgApiClient } = require("instagram-private-api")
-const ig = new IgApiClient()
+const dotenv = require('dotenv');
+const fs = require('fs');
+const path = require('path');
+const { IgApiClient } = require("instagram-private-api");
+const ig = new IgApiClient();
 
-const USERNAME = process.env.IG_USER
-const PASSWORD = process.env.IG_PASS
-const BASEPATH = path.dirname(require.main.filename)
+dotenv.config();
 
-ig.state.generateDevice(USERNAME)
+const USERNAME = process.env.IG_USER;
+const PASSWORD = process.env.IG_PASS;
+const BASEPATH = path.dirname(require.main.filename);
+
+ig.state.generateDevice(USERNAME);
 
 // Read file as exported by Python.
 try {
@@ -21,14 +24,14 @@ try {
 
 // Async func to log in and update IG bio
 const main = async () => {
-  await ig.simulate.preLoginFlow()
-  await ig.account.login(USERNAME, PASSWORD)
+  await ig.simulate.preLoginFlow();
+  await ig.account.login(USERNAME, PASSWORD);
 
   // Log out of Instagram when done.
-  process.nextTick(async () => await ig.simulate.postLoginFlow())
+  process.nextTick(async () => await ig.simulate.postLoginFlow());
 
   // Fill in whatever you want your new Instagram bio to be.
-  await ig.account.setBiography(`${data.toString()}`)
+  await ig.account.setBiography(`${data.toString()}`);
 }
 
-main()
+main();

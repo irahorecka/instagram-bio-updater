@@ -1,3 +1,3 @@
 SHELL=/bin/bash
 
-python main.py && node main.js
+python /home/pi/Desktop/instagram-bio-updater/main.py && node /home/pi/Desktop/instagram-bio-updater/main.js
