@@ -32,7 +32,7 @@ def main(owm_api_key):
 
 def build_ig_bio(time_of_day, sky_cond, sky_emoji, temp_feel):
     """Builds IG bio."""
-    return f"Back page of the internet.\n\nI look up and the {time_of_day} sky in Toronto is {sky_cond}{sky_emoji}.\nRight now it feels like... oh, about {temp_feel}C\u00b0."
+    return f"Back page of the internet.\n\nI look up this {time_of_day} and the Toronto sky looks like {sky_cond}{sky_emoji}.\nRight now it feels like... oh, about {temp_feel}\u00b0C."
 
 
 def get_part_of_day(hour):
