@@ -5,12 +5,12 @@ const fs = require('fs');
 const path = require('path');
 const { IgApiClient } = require("instagram-private-api");
 const ig = new IgApiClient();
+const BASEPATH = path.dirname(require.main.filename);
 
-dotenv.config();
+dotenv.config({ path: path.join(BASEPATH, '.env') });
 
 const USERNAME = process.env.IG_USER;
 const PASSWORD = process.env.IG_PASS;
-const BASEPATH = path.dirname(require.main.filename);
 
 ig.state.generateDevice(USERNAME);
 
@@ -31,7 +31,7 @@ const main = async () => {
   process.nextTick(async () => await ig.simulate.postLoginFlow());
 
   // Fill in whatever you want your new Instagram bio to be.
-  await ig.account.setBiography(`${data.toString()}`);
+  await ig.account.setBiography(data.toString());
 }
 
 main();
