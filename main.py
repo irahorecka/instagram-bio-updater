@@ -8,23 +8,24 @@ from datetime import datetime
 from pyowm import OWM
 
 
-def main(api_key):
+def main(owm_api_key):
     """Gets current weather data, build's IG bio, and writes IG bio to 'bio.txt'"""
-    # Gets current part of day (e.g., afternoon)
+    # Gets current part of day (e.g., afternoon).
     current_hour = datetime.now().hour
     time_of_day = get_part_of_day(current_hour)
 
-    # Gets weather data from OpenWeatherMap
-    owm = OWM(api_key)
+    # Gets weather data from OpenWeatherMap.
+    owm = OWM(owm_api_key)
     mgr = owm.weather_manager()
     toronto_weather = mgr.weather_at_place("Toronto,CA").weather
     sky_condition = toronto_weather.detailed_status
     sky_emoji = get_detailed_status_emoji(sky_condition)
+    # Prepend emoji with whitespace if emoji was found.
     sky_emoji = " " + sky_emoji if sky_emoji else sky_emoji
     temp = toronto_weather.temperature("celsius")
     temp_feel = int(temp["feels_like"])
 
-    # Updates IG bio and export bio to 'bio.txt'
+    # Updates IG bio and export bio to 'bio.txt'.
     ig_bio = build_ig_bio(time_of_day, sky_condition, sky_emoji, temp_feel)
     write_to_file("bio.txt", ig_bio)
 
@@ -50,11 +51,14 @@ def get_part_of_day(hour):
 def get_detailed_status_emoji(detailed_status):
     """Gets emoji from detailed weather status."""
     detailed_status = detailed_status.lower()
+    # Stack most specific selectors near top.
     return (
         "🌨"
         if "snow" in detailed_status
         else "🌧"
         if "rain" in detailed_status or "shower" in detailed_status
+        else "⛅️"
+        if "broken cloud" in detailed_status
         else "☁️"
         if "cloud" in detailed_status
         else "☀️"
