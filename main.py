@@ -23,7 +23,7 @@ def main(owm_api_key):
     # Prepend emoji with whitespace if emoji was found.
     sky_emoji = " " + sky_emoji if sky_emoji else sky_emoji
     temp = toronto_weather.temperature("celsius")
-    temp_feel = int(temp["feels_like"])
+    temp_feel = int(round(temp["feels_like"], 0))
 
     # Updates IG bio and export bio to 'bio.txt'.
     ig_bio = build_ig_bio(time_of_day, sky_condition, sky_emoji, temp_feel)
