@@ -7,6 +7,7 @@ from datetime import datetime
 
 from pyowm import OWM
 
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 def main(owm_api_key):
     """Gets current weather data, build's IG bio, and writes IG bio to 'bio.txt'"""
@@ -27,7 +28,7 @@ def main(owm_api_key):
 
     # Updates IG bio and export bio to 'bio.txt'.
     ig_bio = build_ig_bio(time_of_day, sky_condition, sky_emoji, temp_feel)
-    write_to_file("bio.txt", ig_bio)
+    write_to_file(os.path.join(BASE_DIR, "bio.txt"), ig_bio)
 
 
 def build_ig_bio(time_of_day, sky_cond, sky_emoji, temp_feel):

@@ -1,17 +1,19 @@
 // Node file to log into IG and update IG bio with content from bio.txt.
 
 const fs = require('fs')
+const path = require('path')
 const { IgApiClient } = require("instagram-private-api")
 const ig = new IgApiClient()
 
 const USERNAME = process.env.IG_USER
 const PASSWORD = process.env.IG_PASS
+const BASEPATH = path.dirname(require.main.filename)
 
 ig.state.generateDevice(USERNAME)
 
 // Read file as exported by Python.
 try {
-    var data = fs.readFileSync('bio.txt', 'utf8');
+    var data = fs.readFileSync(path.join(BASEPATH, 'bio.txt'), 'utf8');
     console.log(data.toString());
 } catch(e) {
     console.log('Error:', e.stack);
