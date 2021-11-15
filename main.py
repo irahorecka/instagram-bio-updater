@@ -24,11 +24,11 @@ def main(owm_api_key):
     # Fetch sunrise and sunset times
     sunrise_hour = datetime.fromtimestamp(toronto_weather.sunrise_time()).hour
     sunset_hour = datetime.fromtimestamp(toronto_weather.sunset_time()).hour
-    time_of_day = get_part_of_day(current_hour, sunrise_hour, sunset_hour)
+    part_of_day = get_part_of_day(current_hour, sunrise_hour, sunset_hour)
 
     # Get sky condition and corresponding emoji
     sky_condition = toronto_weather.detailed_status
-    sky_emoji = get_detailed_status_emoji(sky_condition)
+    sky_emoji = get_detailed_status_emoji(part_of_day, sky_condition)
     # Prepend emoji with whitespace if emoji was found.
     sky_emoji = " " + sky_emoji if sky_emoji else sky_emoji
 
@@ -37,13 +37,13 @@ def main(owm_api_key):
     temp_feel = int(round(temp["feels_like"], 0))
 
     # Updates IG bio and export bio to 'bio.txt'.
-    ig_bio = build_ig_bio(time_of_day, sky_condition, sky_emoji, temp_feel)
+    ig_bio = build_ig_bio(part_of_day, sky_condition, sky_emoji, temp_feel)
     write_to_file(os.path.join(BASE_DIR, "bio.txt"), ig_bio)
 
 
-def build_ig_bio(time_of_day, sky_cond, sky_emoji, temp_feel):
+def build_ig_bio(part_of_day, sky_cond, sky_emoji, temp_feel):
     """Builds IG bio."""
-    return f"Back page of the internet.\n\nI look up this {time_of_day} and the Toronto sky looks like {sky_cond}{sky_emoji}.\nRight now it feels like... oh, about {temp_feel}\u00b0C."
+    return f"Back page of the internet.\n\nI look up this {part_of_day} and the Toronto sky looks like {sky_cond}{sky_emoji}.\nRight now it feels like... oh, about {temp_feel}\u00b0C."
 
 
 def get_part_of_day(hour, sunrise_hour, sunset_hour):
@@ -59,23 +59,54 @@ def get_part_of_day(hour, sunrise_hour, sunset_hour):
     )
 
 
-def get_detailed_status_emoji(detailed_status):
+def get_detailed_status_emoji(part_of_day, detailed_status):
     """Gets emoji from detailed weather status."""
     detailed_status = detailed_status.lower()
     # Stack most specific selectors near top.
-    return (
-        "🌨"
+    weather_key = (
+        "clear"
+        if "clear" in detailed_status
+        else "partially-cloudy"
+        if "broken cloud" in detailed_status or "scattered cloud" in detailed_status
+        else "snow"
         if "snow" in detailed_status
-        else "🌧"
+        else "rain"
         if "rain" in detailed_status or "shower" in detailed_status
-        else "⛅️"
-        if "broken cloud" in detailed_status
-        else "☁️"
+        else "cloudy"
         if "cloud" in detailed_status
-        else "☀️"
-        if "sun" in detailed_status
         else ""
     )
+    emoji_dict = {
+        "morning": {
+            "clear": "☀️",
+            "partially-cloudy": "⛅️",
+            "cloudy": "☁️",
+            "rain": "🌧",
+            "snow": "🌨",
+        },
+        "afternoon": {
+            "clear": "☀️",
+            "partially-cloudy": "⛅️",
+            "cloudy": "☁️",
+            "rain": "🌧",
+            "snow": "🌨",
+        },
+        "evening": {
+            "clear": "🌌",
+            "partially-cloudy": "☁️🌌",
+            "cloudy": "☁️",
+            "rain": "🌧",
+            "snow": "🌨",
+        },
+        "night": {
+            "clear": "🌌",
+            "partially-cloudy": "☁️🌌",
+            "cloudy": "☁️",
+            "rain": "🌧",
+            "snow": "🌨",
+        },
+    }
+    return emoji_dict[part_of_day].get(weather_key, "")
 
 
 def write_to_file(filepath, content):
